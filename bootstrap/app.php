@@ -14,5 +14,5 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: 'throttle:global');
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+
     })->create();
