@@ -1,6 +1,6 @@
 <button
     type="submit"
-    class="w-full btn btn-pink"
+    class="mt-3 w-full btn btn-pink"
 >
     {{$slot}}
 </button>

@@ -1,9 +1,22 @@
 @extends('layouts.auth')
-@section('title','Вход в аккаунт')
+@section('title','Регистрация')
 @section('content')
     <div class="max-w-[640px] mt-12 mx-auto p-6 xs:p-8 md:p-12 2xl:p-16 rounded-[20px] bg-purple">
-        <h1 class="mb-5 text-lg font-semibold">Вход в аккаунт</h1>
+        <h1 class="mb-5 text-lg font-semibold">Регистрация</h1>
         <x-forms.auth-forms method="POST" action="#">
+            <x-forms.text-input
+                name="name"
+                type="text"
+                placeholder="Имя"
+                :isError="$errors->has('name')"
+                required
+            />
+            @error('name')
+                <x-forms.errors>
+                    {{$message}}
+                </x-forms.errors>
+            @enderror
+
             <x-forms.text-input
                 name="email"
                 type="email"
@@ -16,12 +29,32 @@
                     {{$message}}
                 </x-forms.errors>
             @enderror
+
             <x-forms.text-input
                 name="password"
                 type="password"
                 placeholder="Пароль"
                 required
+                :isError="$errors->has('password')"
             />
+            @error('password')
+                <x-forms.errors>
+                    {{$errors}}
+                </x-forms.errors>
+            @enderror
+
+            <x-forms.text-input
+                name="password_confirmation"
+                type="password"
+                placeholder="Подтверждение пароля"
+                required
+                :isError="$errors->has('password_confirmation')"
+            />
+            @error('password_confirmation')
+                <x-forms.errors>
+                    {{$errors}}
+                </x-forms.errors>
+            @enderror
             <x-forms.primary-button>Войти</x-forms.primary-button>
             <x-slot:socialAuth>
                 <div class="mt-5">
