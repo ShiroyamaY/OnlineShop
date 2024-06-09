@@ -35,6 +35,7 @@ module.exports = {
         dark: "#222",
         gray: "#454545",
         darkblue: "#1E1F43",
+        green: "#4BB543",
 				body: '#BDBECA',
 				card: '#323359',
       },

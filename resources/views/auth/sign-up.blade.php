@@ -41,7 +41,7 @@
     />
     @error('password')
         <x-forms.errors>
-            {{$errors}}
+            {{$message}}
         </x-forms.errors>
     @enderror
 
@@ -54,7 +54,7 @@
     />
     @error('password_confirmation')
         <x-forms.errors>
-            {{$errors}}
+            {{$message}}
         </x-forms.errors>
     @enderror
     <x-forms.primary-button>Войти</x-forms.primary-button>
