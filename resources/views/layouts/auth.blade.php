@@ -10,10 +10,9 @@
 <body class="font-sans antialiased dark:bg-black dark:text-white/50">
     <main class="md:min-h-screen md:flex md:items-center md:justify-center py-16 lg:py-20">
         <div class="container">
-        <!-- Page heading -->
         <div class="text-center">
             <a href="{{route('home')}}" class="inline-block" rel="home">
-                <img src="{{Vite::image('logo.png')}}" class="w-[200px] md:w-[150px] h-[76px] md:h-[50px] rounded" alt="tech-shop">
+                <img src="{{Vite::image('logo.svg')}}" class="w-[148px] md:w-[201px] h-[36px] md:h-[50px] rounded" alt="tech-shop">
             </a>
         </div>
         @yield('content')
