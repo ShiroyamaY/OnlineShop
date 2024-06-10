@@ -6,18 +6,28 @@ use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::controller(AuthController::class)->group(function(){
-   Route::get('/login', 'index')->name('login');
-   Route::post('/login', 'signIn')->name('sign-in');
+Route::controller(AuthController::class)
+    ->group(function()
+    {
+       Route::get('/login', 'index')
+           ->name('login')
+           ->middleware('guest');
+       Route::post('/login', 'signIn')
+           ->name('sign-in')
+           ->middleware('guest');
 
-   Route::get('/sign-up','signUp')->name('sign-up');
-   Route::post('/sign-up','store')->name('auth.store');
+       Route::get('/sign-up','signUp')
+           ->name('sign-up')
+           ->middleware('guest');
+       Route::post('/sign-up','store')
+           ->name('auth.store')
+           ->middleware('guest');
 
-   Route::get('/forgot-password','forgotPassword')->name('forgot-password');
+       Route::get('/forgot-password','forgotPassword')->name('forgot-password');
 
-   Route::delete('/logout','logOut')->name('logout');
+       Route::delete('/logout','logOut')->name('logout');
 
-});
+    });
 
 Route::prefix('email')->group(function(){
     Route::get('/verify',function(Request $request){
