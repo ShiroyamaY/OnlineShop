@@ -54,12 +54,12 @@ class AuthController extends Controller
     }
     public function store(SignUpFormRequest $request): RedirectResponse
     {
-
         $user = User::query()->create([
             'name' => $request->get('name'),
             'email' => $request->get('email'),
             'password' => Hash::make($request->get('password')),
         ]);
+
         Auth::login($user);
 
         event(new Registered($user));
@@ -69,7 +69,6 @@ class AuthController extends Controller
 
     public function forgot(): View
     {
-
         return view('auth.forgot-password');
     }
 
@@ -79,21 +78,30 @@ class AuthController extends Controller
             $request->safe()->only('email')
         );
 
-        return $status === Password::RESET_LINK_SENT
-            ? back()->with(['status' => __($status)])
-            : back()->withErrors(['email' => __($status)]);
+        if ($status === Password::RESET_LINK_SENT)
+        {
+            flash()->info(__($status));
+        }
+        else {
+            flash()->alert(__($status));
+        }
+
+        return back();
     }
     public function reset(Request $request): View
     {
         $token = $request->get('token');
+
         return view('auth.reset-password', ['token' => $token]);
     }
 
     public function resetPassword(ResetPasswordFormRequest $request): RedirectResponse
     {
+
             $status = Password::reset(
                 $request->safe()->only('email', 'password', 'password_confirmation', 'token'),
-                function (User $user, string $password) {
+                function (User $user, string $password)
+                {
                     $user->forceFill([
                         'password' => bcrypt($password)
                     ])->setRememberToken(Str::random(60));
@@ -104,9 +112,14 @@ class AuthController extends Controller
                 }
             );
 
-            return $status === Password::PASSWORD_RESET
-                ? redirect()->route('login')->with('status', __($status))
-                : back()->withErrors(['email' => [__($status)]]);
+            if ($status === Password::PASSWORD_RESET)
+            {
+                flash()->info(__($status));
+                return redirect()->route('login');
+            }else{
+                flash()->alert(__($status));
+                return back();
+            }
     }
 
     public function redirect(): RedirectResponse
@@ -121,7 +134,8 @@ class AuthController extends Controller
 
             $user = User::where('google_id',$googleUser->getId())->first();
 
-            if(!$user){
+            if(!$user)
+            {
                 $newUser = User::create([
                     'name' => $googleUser->getName(),
                     'email' => $googleUser->getEmail(),
@@ -134,7 +148,7 @@ class AuthController extends Controller
             return redirect()
                 ->intended(route('home'));
 
-        }catch (\Throwable $exception){
+        }catch (\Throwable $exception) {
             return back()
                 ->withErrors(['google' => __($exception->getMessage())]);
         }

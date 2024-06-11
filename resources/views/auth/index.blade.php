@@ -4,9 +4,9 @@
 <x-forms.auth-forms title="Вход в аккаунт"
                     method="POST"
                     action="{{route('sign-in')}}">
-    @if(session('status'))
-        <div class="alert-info">
-            {{session('status')}}
+    @if($message = flash()->get())
+        <div class="{{$message->getClass()}}">
+            {{$message->getMessage()}}
         </div>
     @endif
     <x-forms.text-input

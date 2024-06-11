@@ -4,9 +4,9 @@
 <x-forms.auth-forms title="Забыли пароль"
                     method="POST"
                     action="{{route('password.email')}}">
-    @if(session('status'))
-        <div class="alert-info">
-            {{session('status')}}
+    @if($message = flash()->get())
+        <div class="{{$message->getClass()}}">
+            {{$message->getMessage()}}
         </div>
     @endif
     <x-forms.text-input
