@@ -11,16 +11,17 @@ use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
+use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
-    public function index(): View{
+    public function index(): View
+    {
         return view('auth.index');
     }
     public function signIn(SignInFormRequest $request): RedirectResponse
@@ -66,12 +67,14 @@ class AuthController extends Controller
         return redirect()->intended(route('home'));
     }
 
-    public function forgot(): View{
+    public function forgot(): View
+    {
 
         return view('auth.forgot-password');
     }
 
-    public function forgotPassword(ForgotPasswordFormRequest $request): RedirectResponse{
+    public function forgotPassword(ForgotPasswordFormRequest $request): RedirectResponse
+    {
         $status = Password::sendResetLink(
             $request->safe()->only('email')
         );
@@ -80,12 +83,14 @@ class AuthController extends Controller
             ? back()->with(['status' => __($status)])
             : back()->withErrors(['email' => __($status)]);
     }
-    public function reset(Request $request): View{
+    public function reset(Request $request): View
+    {
         $token = $request->get('token');
         return view('auth.reset-password', ['token' => $token]);
     }
 
-    public function resetPassword(ResetPasswordFormRequest $request): RedirectResponse{
+    public function resetPassword(ResetPasswordFormRequest $request): RedirectResponse
+    {
             $status = Password::reset(
                 $request->safe()->only('email', 'password', 'password_confirmation', 'token'),
                 function (User $user, string $password) {
@@ -102,5 +107,36 @@ class AuthController extends Controller
             return $status === Password::PASSWORD_RESET
                 ? redirect()->route('login')->with('status', __($status))
                 : back()->withErrors(['email' => [__($status)]]);
+    }
+
+    public function redirect(): RedirectResponse
+    {
+        return Socialite::driver('google')->redirect();
+    }
+
+    public function callback(): RedirectResponse
+    {
+        try {
+            $googleUser = Socialite::driver('google')->user();
+
+            $user = User::where('google_id',$googleUser->getId())->first();
+
+            if(!$user){
+                $newUser = User::create([
+                    'name' => $googleUser->getName(),
+                    'email' => $googleUser->getEmail(),
+                    'google_id' => $googleUser->getId(),
+                ]);
+            }else{
+                Auth::login($user);
+            }
+
+            return redirect()
+                ->intended(route('home'));
+
+        }catch (\Throwable $exception){
+            return back()
+                ->withErrors(['google' => __($exception->getMessage())]);
+        }
     }
 }
