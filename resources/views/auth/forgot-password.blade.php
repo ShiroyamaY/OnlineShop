@@ -3,7 +3,12 @@
 @section('content')
 <x-forms.auth-forms title="Забыли пароль"
                     method="POST"
-                    action="#">
+                    action="{{route('password.email')}}">
+    @if(session('status'))
+        <div class="alert-info">
+            {{session('status')}}
+        </div>
+    @endif
     <x-forms.text-input
         name="email"
         type="email"

@@ -4,9 +4,8 @@ namespace App\Http\Requests\Auth;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Password;
 
-class SignInFormRequest extends FormRequest
+class ResetPasswordFormRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -21,8 +20,9 @@ class SignInFormRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required','string', 'email:dns'],
-            'password' => ['required'],
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|min:8|confirmed',
         ];
     }
 }

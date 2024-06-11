@@ -2,15 +2,17 @@
 
 namespace App\Models;
 
+use App\Jobs\QueuedPasswordResetJob;
 use App\Jobs\QueuedVerifyEmailJob;
 use App\Notifications\QueuedVerifyEmail;
 use Illuminate\Auth\Notifications\VerifyEmail;
+use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable implements MustVerifyEmail, CanResetPassword
 {
     use HasFactory, Notifiable;
 
@@ -50,5 +52,8 @@ class User extends Authenticatable implements MustVerifyEmail
     public function sendEmailVerificationNotification(): void
     {
         QueuedVerifyEmailJob::dispatch($this);
+    }
+    public function sendPasswordResetNotification($token): void{
+        QueuedPasswordResetJob::dispatch($this, $token);
     }
 }

@@ -23,10 +23,13 @@ Route::controller(AuthController::class)
            ->name('auth.store')
            ->middleware('guest');
 
-       Route::get('/forgot-password','forgotPassword')->name('forgot-password');
-
        Route::delete('/logout','logOut')->name('logout');
 
+       Route::get('/forgot-password','forgot')->name('password.request');
+       Route::post('/forgot-password','forgotPassword')->name('password.email');
+
+       Route::get('/reset-password','reset')->name('password.reset');
+       Route::post('/reset-password','resetPassword')->name('password.update');
     });
 
 Route::prefix('email')->group(function(){
